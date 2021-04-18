@@ -18,14 +18,16 @@
 
 #### Ingress
 
+- Declarado en sección Ingressen yaml
 - Problemas con la versión de la API
 
 #### Réplicas 2
 
-- 
+- Declarado en archivo yaml
 
 #### Autoescala 2 a 4 mediante el uso de CPU al 50%
 
+- Declarado en sección Autoscaler en yaml
 - ¿Error en la versión de la API?
 
 ````bash
@@ -34,11 +36,11 @@ error validating data: ValidationError(HorizontalPodAutoscaler.status): missing 
 
 #### Exponer el servicio cluster ip
 
--  
+-  Declarado en sección service en archivo yaml
 
 #### Utilizar rolling update como estrategia
 
-- 
+- Declarado en sección deployment archivo yaml
 
 #### Setear variables de ambiente 
 
@@ -56,7 +58,7 @@ echo $VARIABLEENYAML
 
 #### Setear variables de ambiente con configmap
 
-- 
+- Declarado en archivo yaml
 
 #### Setear secreto com un archivo
 
@@ -74,17 +76,17 @@ more /etc/secretos/config.yaml
 
 #### Asignar Volumen de tipo empty
 
-- 
+- Declarado en sección deployment en archivo yaml
 
 #### Setear liveness y readliness
 
-- 
+- Declarado en sección deployment en archivo yaml
 
 ## Iniciar todo
 
 - Ejecutar
 
 ````
-k create -f actividad-2.yml
+k create -f actividad-1.yml
 ````
 
