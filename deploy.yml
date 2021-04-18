@@ -1,0 +1,58 @@
+# Deployment App
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actividad-grupo5-deployment
+  labels:
+    tier: frontend
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: app-grupo5
+  replicas: 2
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  template:
+    metadata:
+      name: nginx-2
+      labels:
+        app: app-grupo5
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          env:
+          - name: GREETING
+            value: "Warm greetings to"
+          - name: HONORIFIC
+            value: "The Most Honorable"
+          - name: NAME
+            value: "Kubernetes"
+          #liveness
+          livenessProbe:
+            exec:
+              command:
+              - cat
+              - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - cat
+              - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 5 
+          #command: ["echo"]
+          #args: ["$(GREETING) $(HONORIFIC) $(NAME)"]
+          volumeMounts:
+            - mountPath: /cache
+              name: cache-volume
+      volumes:
+      - name: cache-volume
+        emptyDir: {}

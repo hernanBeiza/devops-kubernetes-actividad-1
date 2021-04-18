@@ -1,0 +1,169 @@
+# Service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: actividad-grupo5-service
+  labels:
+    app: actividad-grupo5-service
+spec:
+  selector:
+    app: actividad-grupo5-service
+  type: LoadBalancer
+  externalIPs:
+  - 192.168.64.40
+  - 192.168.64.60
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 443
+      targetPort: 9377
+# Ingress
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: actividad-grupo5-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /testpath
+        pathType: Prefix
+        backend:
+          service:
+            name: test
+            port:
+              number: 80
+---
+#Secret
+apiVersion: v1
+kind: Secret
+metadata:
+  name: actividad-grupo5-secret
+type: Opaque
+stringData:
+  config.yaml: |
+    apiUrl: "https://api.privada.cl"
+    username: <user>
+    password: <password>
+# Deployment App
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: actividad-grupo5-deployment
+  labels:
+    tier: frontend
+    app: nginx
+spec:
+  selector:
+    matchLabels:
+      app: app-grupo5
+  replicas: 2
+  strategy: 
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 0
+  template:
+    metadata:
+      name: nginx-2
+      labels:
+        app: app-grupo5
+    spec:
+      containers:
+        - name: nginx
+          image: nginx
+          args:
+          - /bin/sh
+          - -c
+          - touch /tmp/healthy; sleep 30; rm -rf /tmp/healthy; sleep 600
+          env:
+          - name: GREETING
+            value: "Warm greetings to"
+          - name: HONORIFIC
+            value: "The Most Honorable"
+          - name: NAME
+            value: "Kubernetes"
+          #liveness
+          livenessProbe:
+            exec:
+              command:
+              - cat
+              - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            exec:
+              command:
+              - cat
+              - /tmp/healthy
+            initialDelaySeconds: 5
+            periodSeconds: 5 
+          #command: ["echo"]
+          #args: ["$(GREETING) $(HONORIFIC) $(NAME)"]
+
+          volumeMounts:
+            - mountPath: /cache
+              name: cache-volume
+            - mountPath: "/etc/secretos"
+              name: secretos
+              readOnly: true
+      volumes:
+      - name: cache-volume
+        emptyDir: {}
+      - name: secretos
+        secret:
+          secretName: actividad-grupo5-secret
+# Configmap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: actividad-grupo5-configmap
+  namespace: default
+  resourceVersion: "516"
+  uid: b4952dc3-d670-11e5-8cd0-68f728db1985
+data:
+  colores: |
+    color.good=green
+    color.bad=red
+# Autoscaler
+---
+apiVersion: autoscaling/v2beta2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: actividad-grupo5-scaler
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: actividad-grupo5-deployment
+  minReplicas: 1
+  maxReplicas: 2
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50
+status:
+  observedGeneration: 1
+  lastScaleTime: <some-time>
+  currentReplicas: 1
+  desiredReplicas: 1
+  currentMetrics:
+  - type: Resource
+    resource:
+      name: cpu
+      current:
+        averageUtilization: 0
+        averageValue: 0
