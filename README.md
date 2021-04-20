@@ -3,9 +3,9 @@
 
 ## Estado general de requerimientos abordados
 
-- Ingress ❌
+- Ingress ✅
 - Réplicas 2 ✅
-- Autoescala 2 a 4 mediante el uso de CPU al 50% ❌
+- Autoescala 2 a 4 mediante el uso de CPU al 50% ✅
 - Exponer el servicio cluster ip ✅
 - Utilizar rolling update como estrategia ✅
 - Setear variables de ambiente ✅
