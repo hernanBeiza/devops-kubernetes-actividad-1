@@ -86,9 +86,6 @@ spec:
               - /tmp/healthy
             initialDelaySeconds: 5
             periodSeconds: 5 
-          #command: ["echo"]
-          #args: ["$(GREETING) $(HONORIFIC) $(NAME)"]
-
           volumeMounts:
             - mountPath: /cache
               name: cache-volume
