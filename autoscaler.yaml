@@ -1,4 +1,4 @@
-#Autoscaler
+# Autoscaler
 ---
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
@@ -9,8 +9,8 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: actividad-grupo5-deployment
-  minReplicas: 1
-  maxReplicas: 2
+  minReplicas: 2
+  maxReplicas: 4
   metrics:
   - type: Resource
     resource:
@@ -19,8 +19,10 @@ spec:
         type: Utilization
         averageUtilization: 50
 status:
+  conditions:
+  - status: "Unknown"
+    type: CargaCPU
   observedGeneration: 1
-  lastScaleTime: <some-time>
   currentReplicas: 1
   desiredReplicas: 1
   currentMetrics:

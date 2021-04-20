@@ -1,9 +1,9 @@
-#Configmap
+# Configmap
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: grupo5-configmap
+  name: actividad-grupo5-configmap
   namespace: default
   resourceVersion: "516"
   uid: b4952dc3-d670-11e5-8cd0-68f728db1985

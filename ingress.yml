@@ -1,19 +1,18 @@
 # Ingress
 ---
-apiVersion: networking.k8s.io/v1
+apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: grupo5-ingress
+  name: actividad-grupo5-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
 spec:
   rules:
-  - http:
+  - host: backendgrupo5.com
+    http:
       paths:
-      - path: /testpath
+      - path: /
         pathType: Prefix
         backend:
-          service:
-            name: test
-            port:
-              number: 80
+          serviceName: actividad-grupo5-service
+          servicePort: 8083
